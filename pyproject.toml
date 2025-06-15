@@ -17,6 +17,7 @@ dependencies = [
     "langchain-ollama>=0.3.3",
     "langchain-openai>=0.3.22",
     "openai>=1.84.0",
+    "pandas>=2.3.0",
     "pylance>=0.29.0",
     "tiktoken>=0.9.0",
     "transformers>=4.52.4",
