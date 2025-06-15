@@ -1,0 +1,25 @@
+services:
+  openwebui:
+    container_name: openwebui
+    image: ghcr.io/open-webui/open-webui:ollama
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    ports:
+      - 3000:8080
+      - 11434:11434
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+    shm_size: '2gb'
+    volumes:
+      - ollama:/root/.ollama
+      - open-webui:/app/backend/data
+
+volumes:
+  ollama:
+  open-webui:
