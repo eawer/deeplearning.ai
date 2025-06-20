@@ -17,7 +17,6 @@ repos:
         language: system
         entry: tox -e fix
         pass_filenames: false
-        files: \.py$
         stages: [pre-commit]
   - repo: local
     hooks:
