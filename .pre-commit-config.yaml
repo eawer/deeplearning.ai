@@ -1,0 +1,29 @@
+default_install_hook_types:
+  - pre-commit
+  - post-checkout
+  - post-merge
+  - post-rewrite
+
+repos:
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.7.13
+    hooks:
+      - id: uv-lock
+      - id: uv-sync
+  - repo: local
+    hooks:
+      - id: tox-fix
+        name: "Run formatter and linter (via tox)"
+        language: system
+        entry: tox -e fix
+        pass_filenames: false
+        files: \.py$
+        stages: [pre-commit]
+  - repo: local
+    hooks:
+      - id: trufflehog
+        name: TruffleHog
+        description: Detect secrets in your data.
+        entry: bash -c 'trufflehog --no-update git file://. --since-commit HEAD --results=verified,unknown --fail'
+        language: system
+        stages: ["pre-commit", "pre-push"]
