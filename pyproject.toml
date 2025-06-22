@@ -9,6 +9,7 @@ dependencies = [
   "google-auth-oauthlib>=1.2.2",
   "ipykernel>=6.29.5",
   "ipywidgets>=8.1.7",
+  "langchain-chroma>=0.2.4",
   "langchain-community>=0.3.24",
   "langchain-experimental>=0.3.4",
   "langchain-google-genai>=2.1.4",
@@ -50,6 +51,8 @@ dev = [
 [tool.ruff]
 line-length = 120
 target-version = "py313"
+
+[tool.ruff.lint]
 extend-select = ["I"]
 
 [tool.tox]
