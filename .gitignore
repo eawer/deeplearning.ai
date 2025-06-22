@@ -8,5 +8,8 @@ wheels/
 
 # Virtual environments
 .venv
-creds/*
+creds
 temp/
+data/
+.tox
+.ruff_cache
