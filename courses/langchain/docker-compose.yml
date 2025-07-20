@@ -59,6 +59,7 @@ services:
         echo 'Finished preloading models.';
       "
     restart: on-failure
+
 volumes:
   ollama:
   open-webui:
