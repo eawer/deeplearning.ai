@@ -1,0 +1,66 @@
+services:
+  openwebui:
+    container_name: openwebui
+    image: ghcr.io/open-webui/open-webui:ollama
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    ports:
+      - 3000:8080
+      - 11434:11434
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+    shm_size: '2gb'
+    volumes:
+      - ollama:/root/.ollama
+      - open-webui:/app/backend/data
+
+  speaches:
+    container_name: speaches
+    restart: unless-stopped
+    ports:
+      - 3001:8000
+    image: ghcr.io/speaches-ai/speaches:latest-cuda
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    environment:
+      - API_KEY=abc
+      # - LOG_LEVEL=debug
+      # - ALLOW_ORIGINS=["*"]
+    volumes:
+      - hf-hub-cache:/home/ubuntu/.cache/huggingface/hub
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "-H", "Authorization: Bearer abc", "http://0.0.0.0:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+  speaches-init:
+    image: curlimages/curl:latest
+    depends_on:
+      speaches:
+        condition: service_healthy
+    command: >
+      sh -c "
+        echo 'Speaches is healthy. Preloading models...';
+        curl -X POST -H 'Authorization: Bearer abc' http://speaches:8000/v1/models/Systran/faster-distil-whisper-large-v3;
+        echo 'Finished preloading models.';
+      "
+    restart: on-failure
+
+volumes:
+  ollama:
+  open-webui:
+  hf-hub-cache:
